@@ -42,7 +42,7 @@ export async function getAdminUser(): Promise<User | null> {
   if (!user) return null;
 
   const { data } = await supabase
-    .from("users")
+    .from("Users")
     .select("*")
     .eq("id", user.id)
     .single();

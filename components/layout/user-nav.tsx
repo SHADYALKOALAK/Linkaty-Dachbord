@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/hooks/use-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 import {
@@ -13,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "@/services/auth";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { LogOut, User } from "lucide-react";
 
@@ -31,9 +31,7 @@ export function UserNav() {
   };
 
   if (loading) {
-    return (
-      <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
-    );
+    return <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />;
   }
 
   return (
