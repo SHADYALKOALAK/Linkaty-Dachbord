@@ -33,17 +33,9 @@ ON "Users"
 FOR UPDATE
 TO authenticated
 USING (
-  auth.uid() IN (
-    SELECT id FROM "Users"
-    WHERE role = 'admin'
-  )
+  role = 'admin'
 )
-WITH CHECK (
-  auth.uid() IN (
-    SELECT id FROM "Users"
-    WHERE role = 'admin'
-  )
-);
+WITH CHECK (true);
 
 -- Allow admin to delete users
 DROP POLICY IF EXISTS "Admin can delete users" ON "Users";
