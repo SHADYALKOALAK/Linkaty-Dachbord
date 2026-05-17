@@ -21,12 +21,26 @@ CREATE POLICY "Admin can read all users" ON "Users"
 
 -- Allow admin to update any user (for status toggles)
 DROP POLICY IF EXISTS "Admin can update any user" ON "Users";
-CREATE POLICY "Admin can update any user" ON "Users"
-  FOR UPDATE
-  TO authenticated
-  USING (true)
-  WITH CHECK (true);
-
+CREATE POLICY "Admin can update any user"
+ON "Users"
+FOR UPDATE
+TO authenticated
+USING (
+  EXISTS (
+    SELECT 1
+    FROM "Users" u
+    WHERE u.id = auth.uid()
+    AND u.role = 'admin'
+  )
+)
+WITH CHECK (
+  EXISTS (
+    SELECT 1
+    FROM "Users" u
+    WHERE u.id = auth.uid()
+    AND u.role = 'admin'
+  )
+);
 -- Allow admin to delete users
 DROP POLICY IF EXISTS "Admin can delete users" ON "Users";
 CREATE POLICY "Admin can delete users" ON "Users"
