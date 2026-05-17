@@ -19,13 +19,34 @@ CREATE POLICY "Admin can read all users" ON "Users"
   TO authenticated
   USING (true);
 
--- Allow admin to update any user (for status toggles)
-DROP POLICY IF EXISTS "Admin can update any user" ON "Users";
-CREATE POLICY "Admin can update any user" ON "Users"
-  FOR UPDATE
-  TO authenticated
-  USING (true)
-  WITH CHECK (true);
+-- ============================================================
+-- USERS TABLE: ADMIN UPDATE ONLY
+-- ============================================================
+
+ALTER TABLE "public"."Users" ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Admin can update any user" ON "public"."Users";
+
+CREATE POLICY "Admin can update any user"
+ON "public"."Users"
+FOR UPDATE
+TO authenticated
+USING (
+  EXISTS (
+    SELECT 1
+    FROM "public"."Users" u
+    WHERE u.id = auth.uid()
+    AND u.role = 'admin'
+  )
+)
+WITH CHECK (
+  EXISTS (
+    SELECT 1
+    FROM "public"."Users" u
+    WHERE u.id = auth.uid()
+    AND u.role = 'admin'
+  )
+);
 
 -- Allow admin to delete users
 DROP POLICY IF EXISTS "Admin can delete users" ON "Users";
